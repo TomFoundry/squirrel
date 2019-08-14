@@ -291,7 +291,7 @@ func (b SelectBuilder) RightJoin(join string, rest ...interface{}) SelectBuilder
 
 // AsOfSystemTime ...
 func (b SelectBuilder) AsOfSystemTime(t string) SelectBuilder {
-	return builder.Set(b, "SystemTime", newPart(t)).(SelectBuilder)
+	return builder.Set(b, "SystemTime", newPart("'"+t+"'")).(SelectBuilder)
 	// return builder.Append(b, "SystemTime", newPart(t)).(SelectBuilder)
 }
 
