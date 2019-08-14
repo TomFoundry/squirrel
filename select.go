@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/lann/builder"
 )
@@ -16,6 +17,7 @@ type selectData struct {
 	Options           []string
 	Columns           []Sqlizer
 	From              Sqlizer
+	SystemTime        Sqlizer
 	Joins             []Sqlizer
 	WhereParts        []Sqlizer
 	GroupBys          []string
@@ -98,6 +100,11 @@ func (d *selectData) toSql() (sqlStr string, args []interface{}, err error) {
 		if err != nil {
 			return
 		}
+	}
+
+	if d.SystemTime != nil {
+		sql.WriteString(" AS OF SYSTEM TIME ")
+		args, err = appendToSql([]Sqlizer{d.SystemTime}, sql, " ", args)
 	}
 
 	if len(d.Joins) > 0 {
@@ -281,6 +288,11 @@ func (b SelectBuilder) LeftJoin(join string, rest ...interface{}) SelectBuilder 
 // RightJoin adds a RIGHT JOIN clause to the query.
 func (b SelectBuilder) RightJoin(join string, rest ...interface{}) SelectBuilder {
 	return b.JoinClause("RIGHT JOIN "+join, rest...)
+}
+
+// AsOfSystemTime ...
+func (b SelectBuilder) AsOfSystemTime(t time.Time) SelectBuilder {
+	return builder.Append(b, "SystemTime", newPart(t)).(SelectBuilder)
 }
 
 // Where adds an expression to the WHERE clause of the query.
