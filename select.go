@@ -17,7 +17,7 @@ type selectData struct {
 	Options           []string
 	Columns           []Sqlizer
 	From              Sqlizer
-	SystemTime        Sqlizer
+	SystemTime        time.Time
 	Joins             []Sqlizer
 	WhereParts        []Sqlizer
 	GroupBys          []string
