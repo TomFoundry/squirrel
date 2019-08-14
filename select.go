@@ -101,17 +101,17 @@ func (d *selectData) toSql() (sqlStr string, args []interface{}, err error) {
 		}
 	}
 
-	if d.SystemTime != nil {
-		sql.WriteString(" AS OF SYSTEM TIME ")
-		args, err = appendToSql([]Sqlizer{d.SystemTime}, sql, " ", args)
-	}
-
 	if len(d.Joins) > 0 {
 		sql.WriteString(" ")
 		args, err = appendToSql(d.Joins, sql, " ", args)
 		if err != nil {
 			return
 		}
+	}
+
+	if d.SystemTime != nil {
+		sql.WriteString(" AS OF SYSTEM TIME ")
+		args, err = appendToSql([]Sqlizer{d.SystemTime}, sql, " ", args)
 	}
 
 	if len(d.WhereParts) > 0 {
